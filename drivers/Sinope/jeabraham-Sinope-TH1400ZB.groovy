@@ -57,6 +57,11 @@ def installed() {
     if(prefLogging) log.info "installed() : scheduling configure() every 3 hours"
     runEvery3Hours(configure)
 }
+def initialize() {
+    // Initialize attributes to default values
+    sendEvent(name: "supportedThermostatFanModes", value: [], isStateChange: true)
+    sendEvent(name: "supportedThermostatModes", value: ["off","heat"], isStateChange: true)
+}
 
 def updated() {
     if(prefLogging) log.info "updated() : re-scheduling configure() every 3 hours, and once within a minute."
@@ -209,7 +214,7 @@ def configure(){
 
     // Set unused default values
     sendEvent(name: "coolingSetpoint", value:getTemperature("0BB8")) // 0x0BB8 =  30 Celsius
-    sendEvent(name: "thermostatFanMode", value:"auto") // We dont have a fan, so auto is is
+    sendEvent(name: "thermostatFanMode", value:"auto") // We dont have a fan, so auto it is
     updateDataValue("lastRunningMode", "heat") // heat is the only compatible mode for this device
 
     // Prepare our zigbee commands
@@ -519,3 +524,4 @@ private byte[] reverseArray(byte[] array) {
 
 	return array
 }
+
